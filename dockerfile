@@ -1,14 +1,12 @@
-# Étape 1 : Construction avec Node 20
+# Utilisation de Node 20 (obligatoire pour Next.js)
 FROM node:20-alpine AS build
 WORKDIR /app
 COPY package*.json ./
-# Installation des dépendances
 RUN npm install
 COPY . .
-# Construction du projet Next.js
 RUN npm run build
 
-# Étape 2 : Serveur de production
+# Étape d'exécution
 FROM node:20-alpine AS runner
 WORKDIR /app
 COPY --from=build /app/package*.json ./
