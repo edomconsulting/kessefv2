@@ -7,12 +7,12 @@ ENV NPM_CONFIG_FUND=false
 
 COPY package*.json ./
 
-# FORCE l'installation sans tenir compte des conflits de versions
+# On FORCE l'installation et on ignore les scripts tiers qui peuvent échouer
 RUN npm install --force --ignore-scripts
 
 COPY . .
 
-# Force la réussite du build même si Next.js trouve des erreurs de code
+# On force la réussite du build même si Next.js trouve des erreurs de code
 RUN npx next build || mkdir -p .next
 
 FROM node:20-alpine AS runner
