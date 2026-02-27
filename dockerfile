@@ -1,13 +1,13 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
-# Désactive les fonctions qui bloquent souvent l'installation en CI
+# Désactiver les fonctions qui bloquent souvent l'installation en CI
 ENV NPM_CONFIG_AUDIT=false
 ENV NPM_CONFIG_FUND=false
 
 COPY package*.json ./
 
-# On force l'installation et on ignore les scripts tiers qui échouent
+# FORCE l'installation et ignore les scripts tiers qui peuvent échouer
 RUN npm install --force --ignore-scripts
 
 COPY . .
