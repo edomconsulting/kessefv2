@@ -1,18 +1,18 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
-# Désactiver les fonctions qui bloquent souvent l'installation
+# Désactive les fonctions qui bloquent souvent l'installation en CI
 ENV NPM_CONFIG_AUDIT=false
 ENV NPM_CONFIG_FUND=false
 
 COPY package*.json ./
 
-# On force l'installation et on ignore les scripts de package tiers qui peuvent échouer
+# On force l'installation et on ignore les scripts tiers qui échouent
 RUN npm install --force --ignore-scripts
 
 COPY . .
 
-# Force la réussite du build pour créer l'image quoi qu'il arrive
+# Force la réussite du build même si Next.js trouve des erreurs de code
 RUN npx next build || mkdir -p .next
 
 FROM node:20-alpine AS runner
