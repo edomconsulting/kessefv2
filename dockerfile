@@ -1,14 +1,20 @@
-# Build React
-FROM node:18-alpine AS build
+# Étape 1 : Construction avec Node 20
+FROM node:20-alpine AS build
 WORKDIR /app
 COPY package*.json ./
+# Installation des dépendances
 RUN npm install
 COPY . .
+# Construction du projet Next.js
 RUN npm run build
 
-# Serve avec Nginx
-FROM nginx:stable-alpine
-# Vérifiez si votre dossier de build s'appelle 'build' ou 'dist'
-COPY --from=build /app/build /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Étape 2 : Serveur de production
+FROM node:20-alpine AS runner
+WORKDIR /app
+COPY --from=build /app/package*.json ./
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
+COPY --from=build /app/node_modules ./node_modules
+
+EXPOSE 3000
+CMD ["npm", "start"]
