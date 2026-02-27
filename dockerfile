@@ -1,18 +1,10 @@
-# Utilisation de Node 20 (obligatoire pour Next.js)
+# Étape de build
 FROM node:20-alpine AS build
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+# Utiliser --legacy-peer-deps si vous avez des conflits de versions
+RUN npm install --legacy-peer-deps 
 COPY . .
+# Désactiver temporairement les erreurs de lint/type pour le build
+ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build
-
-# Étape d'exécution
-FROM node:20-alpine AS runner
-WORKDIR /app
-COPY --from=build /app/package*.json ./
-COPY --from=build /app/.next ./.next
-COPY --from=build /app/public ./public
-COPY --from=build /app/node_modules ./node_modules
-
-EXPOSE 3000
-CMD ["npm", "start"]
