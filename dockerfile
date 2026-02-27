@@ -1,18 +1,18 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
-# Désactiver les audits et les scripts qui ralentissent/bloquent
+# Désactiver les fonctions qui peuvent ralentir ou faire planter l'install
 ENV NPM_CONFIG_AUDIT=false
 ENV NPM_CONFIG_FUND=false
 
 COPY package*.json ./
 
-# FORCE l'installation même avec des conflits majeurs
-RUN npm install --force --loglevel=error
+# On force l'installation malgré les erreurs de compatibilité
+RUN npm install --force
 
 COPY . .
 
-# Force le build même avec des erreurs de code
+# Force la création du dossier de build même si Next.js trouve des erreurs
 RUN npx next build || mkdir -p .next
 
 FROM node:20-alpine AS runner
