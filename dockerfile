@@ -7,7 +7,7 @@ ENV NPM_CONFIG_FUND=false
 
 COPY package*.json ./
 
-# FORCE l'installation et ignore les scripts tiers qui peuvent échouer
+# FORCE l'installation sans tenir compte des conflits de versions
 RUN npm install --force --ignore-scripts
 
 COPY . .
